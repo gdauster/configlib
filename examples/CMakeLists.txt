@@ -1,0 +1,2 @@
+add_executable(example_config example_config.cpp)
+target_link_libraries(example_config PRIVATE ConfigLib)
