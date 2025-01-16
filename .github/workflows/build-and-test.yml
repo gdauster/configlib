@@ -1,0 +1,53 @@
+name: Build and Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    name: Cross-platform Build and Test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Install dependencies (Linux)
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y g++ cmake libgtest-dev nlohmann-json3-dev
+        sudo cmake /usr/src/gtest
+        sudo make -C /usr/src/gtest
+        sudo cp /usr/src/gtest/*.a /usr/lib
+
+    - name: Install dependencies (macOS)
+      if: matrix.os == 'macos-latest'
+      run: |
+        brew update
+        brew install cmake nlohmann-json
+
+    - name: Install dependencies (Windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        choco install cmake -y --installargs 'ADD_CMAKE_TO_PATH=System'
+        choco install mingw -y
+        choco install nlohmann-json
+
+    - name: Configure build
+      run: cmake -S . -B build
+      shell: bash
+
+    - name: Build project
+      run: cmake --build build
+      shell: bash
+
+    - name: Run tests
+      run: ctest --test-dir build --output-on-failure
+      shell: bash
