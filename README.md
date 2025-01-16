@@ -21,34 +21,50 @@ config-lib/
 └── data/                      # Example or default JSON configuration files
 
 
-## Build notes
+## CMake Build Instructions
 
-1. CMake configuration:
-Ensure CMAKE_INSTALL_PREFIX is correctly set to the MSYS2 environment (C:/msys64/mingw64).
+### Linux
 
-Use the following command to build the project:
+1. Ensure CMake and a C++ compiler (GCC or Clang) are installed:
 
-```
-mingw32-make
-```
+        sudo apt-get install cmake g++ nlohmann-json3-dev
 
-## Tests tips
+2. Create a build directory and compile:
 
-1.Add Google Test to your project or install it:
+        mkdir build && cd build
+        cmake ..
+        make
 
-```
-sudo apt-get install libgtest-dev
-```
+3. Run the tests:
 
-2.Update your tests/CMakeLists.txt to link with gtest and gtest_main:
+        ctest --output-on-failure
 
-```
-find_package(GTest REQUIRED)
-target_link_libraries(test_config_manager PRIVATE GTest::GTest GTest::Main nlohmann_json::nlohmann_json)
 
-```
-3.Run the tests:
+### Windows (MSYS2)
 
-```
-ctest --output-on-failure
-```
+1. Install MSYS2 and required packages:
+
+        pacman -S mingw-w64-x86_64-gcc mingw-w64-x86_64-cmake mingw-w64-x86_64-make
+        pacman -S mingw-w64-x86_64-nlohmann-json mingw-w64-x86_64-gtest
+
+2. Open MSYS2 MinGW64 terminal and create a build directory:
+
+        mkdir build && cd build
+        cmake -G "MinGW Makefiles" ..
+        mingw32-make
+
+3. Run the tests:
+
+        ctest --output-on-failure
+
+### Windows (MSVC)
+
+1. Install Visual Studio with C++ tools and CMake integration.
+
+2. Open a Developer Command Prompt and configure the build:
+
+        mkdir build && cd build
+        cmake -G "Visual Studio 17 2022" ..
+        cmake --build . --config Release
+
+3. Optionally, build and run tests using ctest.

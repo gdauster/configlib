@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Include directories for public headers
-include_directories(include)
+include_directories(${CMAKE_SOURCE_DIR}/include)
 
 # Link nlohmann::json
 find_package(nlohmann_json 3.2.0 REQUIRED)  # Ensure a compatible version
